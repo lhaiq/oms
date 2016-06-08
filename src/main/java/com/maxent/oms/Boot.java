@@ -1,4 +1,4 @@
-package com.maxent.id.system;
+package com.maxent.oms;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -23,11 +23,6 @@ import org.springframework.context.annotation.ImportResource;
 @Configuration
 public class Boot extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
 
-    @Value("${kafka.producer.url}")
-    private String kafkaBroker;
-
-    @Value("${kafka.producer.topic}")
-    private String topic;
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
