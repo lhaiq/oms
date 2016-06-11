@@ -18,7 +18,7 @@ public class VcenterController {
 
     @RequestMapping(value = "/centers", method = RequestMethod.GET)
     @ResponseBody
-    public Object centers(@RequestParam("auth") String auth) {
+    public Object centers(@RequestHeader("auth") String auth) {
         return vcenterService.vcenters(auth);
     }
 }

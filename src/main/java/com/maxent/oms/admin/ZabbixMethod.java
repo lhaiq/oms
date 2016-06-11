@@ -9,7 +9,6 @@ public class ZabbixMethod {
 
 
 
-
     //item
     public static final String ITEM_GET="item.get";
 }
