@@ -54,4 +54,12 @@ public class ZabbixRequest {
     public void setId(int id) {
         this.id = id;
     }
+
+    public String getAuth() {
+        return auth;
+    }
+
+    public void setAuth(String auth) {
+        this.auth = auth;
+    }
 }

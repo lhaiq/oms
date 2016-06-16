@@ -1,13 +1,12 @@
 package com.maxent.oms.admin.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.maxent.oms.admin.ZabbixMethod;
 import com.maxent.oms.admin.model.Host;
 import com.maxent.oms.admin.model.Item;
-import com.maxent.oms.admin.model.User;
+import com.maxent.oms.admin.model.VCenter;
 import com.maxent.oms.core.model.ZabbixRequest;
 import com.maxent.oms.core.service.ZabbixTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,24 +22,18 @@ import java.util.Map;
  * Created by haiquanli on 16/6/3.
  */
 @Service
-public class VcenterService {
+public class VMService extends HostService{
 
 
-    private static final String VCENTERS_TEMPLATE = "vcenter";
+    private static final String VCENTERS_GROUP = "vcenter";
+    private static final String VCENTERS_TEMPLATE = "Template Virt VMware";
+
     private static final String HYPERVISORS_TEMPLATE = "";
     private static final String VMS_TEMPLATE = "";
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    //https://www.zabbix.com/documentation/3.0/
-    //6092c6a8d6af6b5493cb9abac5060f04
-    @Autowired
-    private ZabbixTemplate zabbixTemplate;
-
 
     public List<Host> vcenters(String auth) {
-        Long groupId = findByName(VCENTERS_TEMPLATE);
+        Long groupId = findGroupByName(VCENTERS_GROUP);
         String sql = "select h.* from hosts_groups g,hosts h\n" +
                 "where\n" +
                 "  g.hostid=h.hostid\n" +
@@ -56,10 +49,53 @@ public class VcenterService {
     }
 
 
+    public void addVCenter(VCenter vCenter, String auth) {
+
+        //group id
+        Long groupId = findGroupByName(VCENTERS_GROUP);
+
+        //template id
+        Long templateId = findTemplateByName(VCENTERS_TEMPLATE);
+
+        Map param = new HashMap();
+        param.put("host", vCenter.getHostName());
+        param.put("name", vCenter.getVisibleName());
+
+        //interfaces
+        param.put("interfaces", ImmutableList.of(ImmutableMap.of("type", 1, "main", 1, "useip", 1,
+                "ip", vCenter.getIp(), "port", "10050")));
+
+        //groups
+        param.put("groups", ImmutableList.of(ImmutableMap.of("groupid", groupId)));
+
+        //templates
+        param.put("templates", ImmutableList.of(ImmutableMap.of("templateid", templateId)));
+
+        //macros
+        param.put("macros", vCenter.getMacros());
+
+        ZabbixRequest request = new ZabbixRequest(ZabbixMethod.HOST_CREATE, param, auth);
+        zabbixTemplate.call(request);
+    }
+
+    public void updateVCenter(VCenter vCenter,String auth){
+        Map param = new HashMap();
+        param.put("hostid",vCenter.getHostid());
+        param.put("host", vCenter.getHostName());
+        param.put("name", vCenter.getVisibleName());
+
+        //macros
+        param.put("macros", vCenter.getMacros());
+
+        ZabbixRequest request = new ZabbixRequest(ZabbixMethod.HOST_UPDATE, param, auth);
+        zabbixTemplate.call(request);
+    }
+
     public List<Host> hypervisors(String ip, String auth) {
-        Long groupId = findByName(HYPERVISORS_TEMPLATE);
-        String sql = "select h.* from interface i\n" +
-                "  join hosts_groups hg\n" +
+        Long groupId = findGroupByName(HYPERVISORS_TEMPLATE);
+        String sql =
+                "select h.* from interface i\n" +
+                "join hosts_groups hg\n" +
                 "on i.hostid=hg.hostid\n" +
                 "join groups g\n" +
                 "on hg.groupid=g.groupid\n" +
@@ -79,7 +115,7 @@ public class VcenterService {
 
 
     public List<Host> vms(String ip, String auth) {
-        Long groupId = findByName(VMS_TEMPLATE);
+        Long groupId = findGroupByName(VMS_TEMPLATE);
         String sql = "select h.* from interface i\n" +
                 "  join hosts_groups hg\n" +
                 "on i.hostid=hg.hostid\n" +
@@ -114,8 +150,13 @@ public class VcenterService {
     }
 
 
-    public Long findByName(String name) {
+    public Long findGroupByName(String name) {
         String sql = "select groupid from groups where name = ?";
+        return jdbcTemplate.queryForObject(sql, Long.class, name);
+    }
+
+    public Long findTemplateByName(String name) {
+        String sql = "select hostid from hosts where name = ?";
         return jdbcTemplate.queryForObject(sql, Long.class, name);
     }
 

@@ -14,8 +14,7 @@ public class TriggerConfigService {
 	private JdbcTemplate jdbcTemplate;
 
 	public TriggerConfig getTriggerConfig(String tplTriggerId) {
-		
- 		
+
 		return jdbcTemplate.queryForObject("select  * from zag_trigger_config where tpl_trigger_id = ? ",
 				new BeanPropertyRowMapper<>(TriggerConfig.class), tplTriggerId);
 	}
