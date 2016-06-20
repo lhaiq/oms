@@ -1,4 +1,4 @@
-package com.maxent.oms.admin;
+package com.maxent.oms.monitor;
 
 /**
  * Created by haiquanli on 16/6/3.
@@ -6,6 +6,8 @@ package com.maxent.oms.admin;
 public class ZabbixMethod {
 
     public static final String USER_LOGIN="user.login";
+    public static final String USER_CREATE="user.create";
+    public static final String USER_UPDATE="user.update";
 
 
 

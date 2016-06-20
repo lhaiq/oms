@@ -1,4 +1,4 @@
-package com.maxent.oms.admin.model;
+package com.maxent.oms.monitor.model;
 
 public class TriggerConfig {
 

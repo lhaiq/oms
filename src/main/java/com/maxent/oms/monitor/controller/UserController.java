@@ -1,9 +1,12 @@
-package com.maxent.oms.admin.controller;
+package com.maxent.oms.monitor.controller;
 
-import com.maxent.oms.admin.model.User;
-import com.maxent.oms.admin.service.UserService;
+import com.maxent.oms.monitor.model.User;
+import com.maxent.oms.monitor.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by haiquanli on 16/6/3.
@@ -16,7 +19,7 @@ public class UserController {
     private UserService userService;
 
     //登录
-    @RequestMapping(value = "/admin/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/login", method = RequestMethod.POST)
     public Object login(@RequestBody User user) {
         return userService.login(user);
     }

@@ -1,7 +1,6 @@
-package com.maxent.oms.admin.model;
+package com.maxent.oms.monitor.model;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by haiquanli on 16/6/16.
@@ -9,18 +8,9 @@ import java.util.Map;
 public class VCenter {
 
     private Long hostid;
-    private String hostName;
-    private String visibleName;
+    private String name;
     private String ip;
     private List<Macro> macros;
-
-    public String getHostName() {
-        return hostName;
-    }
-
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
-    }
 
     public String getIp() {
         return ip;
@@ -38,12 +28,12 @@ public class VCenter {
         return macros;
     }
 
-    public String getVisibleName() {
-        return visibleName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setVisibleName(String visibleName) {
-        this.visibleName = visibleName;
+    public String getName() {
+        return name;
     }
 
     public void setHostid(Long hostid) {
